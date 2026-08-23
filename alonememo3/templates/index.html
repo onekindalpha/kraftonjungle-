@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>나홀로메모장 ver2.0</title>
+
+    <style>
+      * {
+        font-family: "Stylish", sans-serif;
+      }
+
+      .wrap {
+        width: 860px;
+        margin: 30px auto;
+      }
+
+      .top-box {
+        width: 860px;
+        background-color: #e9ecef;
+        border-radius: 2px;
+        padding: 55px 30px;
+        margin: 0 auto 30px auto;
+      }
+
+      .top-title {
+        font-size: 44px;
+        margin-bottom: 20px;
+      }
+
+      .version-badge {
+        background-color: #8c8c8c;
+        color: white;
+        padding: 4px 12px;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+
+      .input-box {
+        width: 500px;
+      }
+
+      #card-list {
+        width: 860px;
+        margin: 25px auto 0 auto;
+      }
+
+      .card-title {
+        font-weight: normal;
+      }
+
+      .card-buttons {
+        margin-top: 15px;
+      }
+
+      .edit-box {
+        margin-top: 15px;
+        display: none;
+      }
+
+      .card-likes {
+        font-weight: bold;
+      }
+
+      .card-title {
+        font-weight: normal;
+      }
+
+      .link-like {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="top-box">
+      <h1 class="top-title">
+        나홀로메모장 <span class="version-badge">ver2.0</span>
+      </h1>
+
+      <div class="input-box">
+          <div class="mb-3">
+            <input
+              id="memo-title"
+              type="text"
+              class="form-control"
+              placeholder="제목을 입력하세요"
+            />
+          </div>
+
+          <div class="mb-3">
+            <textarea
+              id="memo-content"
+              class="form-control"
+              rows="3"
+              placeholder="내용을 입력하세요"
+            ></textarea>
+          </div>
+
+          <button onclick="saveMemo()" type="submit" class="btn btn-primary">
+            저장하기
+          </button>
+        </div>
+      </div>
+
+      <div id="card-list" class="row g-4">
+      </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        showMemos();
+      });
+
+      function saveMemo() {
+        let title = $("#memo-title").val();
+        let content = $("#memo-content").val();
+
+        if (title === "") {
+          alert("제목을 입력해주세요.");
+          return;
+        }
+
+        if (content === "") {
+          alert("내용을 입력해주세요.");
+          return;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/memo",
+          data: {
+            title_give: title,
+            content_give: content
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("저장 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      function showMemos() {
+        $.ajax({
+          type: "GET",
+          url: "/memo",
+          data: {},
+          success: function (response) {
+            let memos = response["memos"];
+
+            $("#card-list").empty();
+
+            let displayMemos = memos;
+
+            if (memos.length <= 3) {
+              $("#card-list").attr("class", "row row-cols-1 row-cols-md-3 g-4");
+            } else {
+              $("#card-list").attr("class", "row row-cols-1 row-cols-md-2 g-4");
+
+              let leftCount = Math.ceil(memos.length / 2);
+              displayMemos = [];
+
+              for (let i = 0; i < leftCount; i++) {
+                displayMemos.push(memos[i]);
+
+                if (memos[i + leftCount]) {
+                  displayMemos.push(memos[i + leftCount]);
+                }
+              }
+            }
+
+            for (let i = 0; i < displayMemos.length; i++) {
+              let id = displayMemos[i]["_id"];
+              let title = displayMemos[i]["title"];
+              let content = displayMemos[i]["content"];
+              let likes = displayMemos[i]["likes"];
+
+              let temp_html = `
+                <div class="col">
+                  <div class="card h-100">
+                    <div id="card-body-${id}" class="card-body">
+                      <h5 class="card-title">${title}</h5>
+                      <p class="card-text">${content}</p>
+
+                      <p>
+                        <span class="card-likes">${likes}</span>
+                      </p>
+
+                      <div class="card-buttons">
+                        <button onclick="showEditBox('${id}')" type="button" class="btn btn-info btn-sm edit-button">수정</button>
+                        <button onclick="deleteMemo('${id}')" type="button" class="btn btn-danger btn-sm delete-button">삭제</button>
+                        <a class="link-like" onclick="likeMemo('${id}')">좋아요! 👍</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              $("#card-list").append(temp_html);
+            }
+          },
+          error: function (xhr) {
+            alert("목록 불러오기 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      function likeMemo(id) {
+        $.ajax({
+          type: "POST",
+          url: "/memo/like",
+          data: {
+            id_give: id
+          },
+          success: function (response) {
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("좋아요 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      function deleteMemo(id) {
+        $.ajax({
+          type: "POST",
+          url: "/memo/delete",
+          data: {
+            id_give: id
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("삭제 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      function showEditBox(id) {
+        let title = $("#card-body-" + id).find(".card-title").text();
+        let content = $("#card-body-" + id).find(".card-text").text();
+
+        let edit_html = `
+          <div class="mb-2">
+            <input class="form-control new-title" value="${title}" />
+          </div>
+          <div class="mb-2">
+            <textarea class="form-control new-text" rows="3">${content}</textarea>
+          </div>
+          <button onclick="saveEdit('${id}')" type="button" class="btn btn-success btn-sm save-button">저장</button>
+        `;
+
+        $("#card-body-" + id).html(edit_html);
+      }
+
+      function saveEdit(id) {
+        let newTitle = $("#card-body-" + id).find(".new-title").val();
+        let newText = $("#card-body-" + id).find(".new-text").val();
+
+        if (newTitle === "") {
+          alert("수정할 제목을 입력해주세요.");
+          return;
+        }
+
+        if (newText === "") {
+          alert("수정할 내용을 입력해주세요.");
+          return;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/memo/edit",
+          data: {
+            id_give: id,
+            title_give: newTitle,
+            content_give: newText
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("수정 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

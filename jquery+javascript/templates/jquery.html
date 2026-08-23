@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>jQuery 연습하고 가기!</title>
+
+    <style type="text/css">
+      div.question-box {
+        margin: 10px 0 20px 0;
+      }
+    </style>
+
+    <script>
+      function q1() {
+        let input_value = $('#input-q1').val()
+        if (input_value == '') {
+          alert('입력하세요!')
+        } else {
+          alert(input_value)
+        }
+      }
+
+      function q2() {
+        // 1. input-q2 값을 가져온다.
+        let input_value = $('#input-q2').val()
+        if (!input_value.includes('@')) {
+          alert('이메일이 아닙니다.');
+        } else {
+          // 3. info.spartacoding@gmail.com -> gmail만 추출해서
+          let domain = input_value.split('@')[1];
+          alert(domain);
+        }
+      }
+
+      function q3() {
+        let input_value = $('#input-q3').val();
+
+        if (input_value == '') {
+          alert('이름을 입력하세요!');
+          return;
+        }
+        // temp_html은 입력값을 <li>입력값</li> 형태의 html목록 항목으로 만들어 임시서장한 변수
+        let temp_html = '<li>' + input_value + '</li>';
+        // html에서 <ul id="names-q3"> 리고 된 곳을 찾아서, 그 안에 temp_html을 붙이기.  
+        $('#names-q3').append(temp_html);
+      }
+      function q3_remove() {
+        $("#names-q3").empty();
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>jQuery + Javascript의 조합을 연습하자!</h1>
+
+    <div class="question-box">
+      <h2>1. 빈칸 체크 함수 만들기</h2>
+      <h5>1-1. 버튼을 눌렀을 때 입력한 글자로 얼럿 띄우기</h5>
+      <h5>
+        [완성본]1-2. 버튼을 눌렀을 때 칸에 아무것도 없으면 "입력하세요!" 얼럿
+        띄우기
+      </h5>
+      <input id="input-q1" type="text" /> <button onclick="q1()">클릭</button>
+    </div>
+    <hr />
+    <div class="question-box">
+      <h2>2. 이메일 판별 함수 만들기</h2>
+      <h5>2-1. 버튼을 눌렀을 때 입력받은 이메일로 얼럿 띄우기</h5>
+      <h5>
+        2-2. 이메일이 아니면(@가 없으면) '이메일이 아닙니다'라는 얼럿 띄우기
+      </h5>
+      <h5>[완성본]2-3. 이메일 도메인만 얼럿 띄우기</h5>
+      <input id="input-q2" type="text" /> <button onclick="q2()">클릭</button>
+    </div>
+    <hr />
+    <div class="question-box">
+      <h2>3. HTML 붙이기/지우기 연습</h2>
+      <h5>3-1. 이름을 입력하면 아래 나오게 하기</h5>
+      <h5>[완성본]3-2. 다지우기 버튼을 만들기</h5>
+      <input id="input-q3" type="text" placeholder="여기에 이름을 입력" />
+      <button onclick="q3()">이름 붙이기</button>
+      <button onclick="q3_remove()">다지우기</button>
+      // 여기에 추가해라. 
+      <ul id="names-q3">
+        <li>세종대왕</li>
+        <li>임꺽정</li>
+      </ul>
+    </div>
+
+    <!-- 이 부분은 절대 지우지 마세요. -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- 이 부분은 절대 지우지 마세요. -->
+  </body>
+</html>

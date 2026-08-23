@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- [각주 1] Bootstrap CSS
+         카드, 버튼, grid 같은 기본 UI 스타일을 사용하기 위해 불러온다. -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- [각주 2] 면접 복습용 제목으로 수정
+         제출본 기능은 유지하고, 이 파일이 해설용임을 구분하기 위한 제목이다. -->
+    <title>나홀로메모장 ver2.0 - 면접 복습용 각주 버전</title>
+
+    <style>
+      * {
+        font-family: "Stylish", sans-serif;
+      }
+
+      .wrap {
+        width: 860px;
+        margin: 30px auto;
+      }
+
+      .top-box {
+        width: 860px;
+        background-color: #e9ecef;
+        border-radius: 2px;
+        padding: 55px 30px;
+        margin: 0 auto 30px auto;
+      }
+
+      .top-title {
+        font-size: 44px;
+        margin-bottom: 20px;
+      }
+
+      .version-badge {
+        background-color: #8c8c8c;
+        color: white;
+        padding: 4px 12px;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+
+      .input-box {
+        width: 500px;
+      }
+
+      /* [각주 3] 카드가 붙는 영역
+         showMemos() 함수가 서버에서 받은 메모 목록을 카드 HTML로 만든 뒤 이 영역에 append한다. */
+      #card-list {
+        width: 860px;
+        margin: 25px auto 0 auto;
+      }
+
+      .card-title {
+        font-weight: normal;
+      }
+
+      .card-buttons {
+        margin-top: 15px;
+      }
+
+      .edit-box {
+        margin-top: 15px;
+        display: none;
+      }
+
+      .card-likes {
+        font-weight: bold;
+      }
+
+      .card-title {
+        font-weight: normal;
+      }
+
+      .link-like {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="top-box">
+        <h1 class="top-title">
+          나홀로메모장 <span class="version-badge">ver2.0</span>
+          <span style="font-size: 18px; margin-left: 8px;">면접 복습용 각주 버전</span>
+        </h1>
+
+        <div class="input-box">
+          <div class="mb-3">
+            <!-- [각주 4] 제목 입력창
+                 saveMemo()가 #memo-title을 찾아 val()로 입력값을 읽는다. -->
+            <input
+              id="memo-title"
+              type="text"
+              class="form-control"
+              placeholder="제목을 입력하세요"
+            />
+          </div>
+
+          <div class="mb-3">
+            <!-- [각주 5] 내용 입력창
+                 saveMemo()가 #memo-content를 찾아 val()로 입력값을 읽는다. -->
+            <textarea
+              id="memo-content"
+              class="form-control"
+              rows="3"
+              placeholder="내용을 입력하세요"
+            ></textarea>
+          </div>
+
+          <!-- [각주 6] 저장 버튼
+               클릭하면 브라우저에서 saveMemo() 자바스크립트 함수가 실행된다. -->
+          <button onclick="saveMemo()" type="submit" class="btn btn-primary">
+            저장하기
+          </button>
+        </div>
+      </div>
+
+      <div id="card-list" class="row g-4">
+      </div>
+    </div>
+
+    <!-- [각주 7] jQuery
+         자바스크립트를 짧고 편하게 쓰기 위한 라이브러리다.
+         이 코드에서는 $ 선택자, val(), text(), append(), $.ajax()를 사용한다. -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // [각주 8] 페이지 로드 시 목록 조회
+      // 브라우저가 HTML을 다 읽으면 showMemos()를 실행해서 DB에 저장된 메모 목록을 가져온다.
+      $(document).ready(function () {
+        showMemos();
+      });
+
+      // [각주 9] 저장 기능: saveMemo()
+      // 흐름: 입력값 읽기 → 빈 값 검사 → /memo POST Ajax 요청 → 성공 시 alert → reload
+      // 연결 route: app.py의 create_memo()
+      function saveMemo() {
+        let title = $("#memo-title").val();
+        let content = $("#memo-content").val();
+
+        if (title === "") {
+          alert("제목을 입력해주세요.");
+          return;
+        }
+
+        if (content === "") {
+          alert("내용을 입력해주세요.");
+          return;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/memo",
+          data: {
+            title_give: title,
+            content_give: content
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            // [각주 10] 현재 방식은 전체 페이지 새로고침이다.
+            // 개선한다면 reload 대신 showMemos()만 호출해 #card-list만 갱신할 수 있다.
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("저장 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      // [각주 11] 조회 기능: showMemos()
+      // 흐름: /memo GET 요청 → response["memos"] 받기 → 기존 카드 비우기 → 카드 HTML 만들기 → append
+      // 연결 route: app.py의 read_memos()
+      function showMemos() {
+        $.ajax({
+          type: "GET",
+          url: "/memo",
+          data: {},
+          success: function (response) {
+            let memos = response["memos"];
+
+            // [각주 12] 기존 카드를 먼저 비운다.
+            // 비우지 않고 append만 하면 showMemos()가 다시 실행될 때 카드가 중복으로 붙을 수 있다.
+            $("#card-list").empty();
+
+            // [각주 13] displayMemos
+            // 서버에서 받은 memos는 이미 likes 기준 내림차순이다.
+            // 카드가 3개 이하이면 그대로 3열 배치한다.
+            // 카드가 4개 이상이면 영상과 비슷한 2열 배치를 위해 배열 순서를 재구성한다.
+            let displayMemos = memos;
+
+            if (memos.length <= 3) {
+              $("#card-list").attr("class", "row row-cols-1 row-cols-md-3 g-4");
+            } else {
+              $("#card-list").attr("class", "row row-cols-1 row-cols-md-2 g-4");
+
+              let leftCount = Math.ceil(memos.length / 2);
+              displayMemos = [];
+
+              for (let i = 0; i < leftCount; i++) {
+                displayMemos.push(memos[i]);
+
+                if (memos[i + leftCount]) {
+                  displayMemos.push(memos[i + leftCount]);
+                }
+              }
+            }
+
+            // [각주 14] 카드 렌더링
+            // 반복문 index i는 화면 순서용이다.
+            // 실제 카드 식별자는 MongoDB의 _id를 사용한다.
+            for (let i = 0; i < displayMemos.length; i++) {
+              let id = displayMemos[i]["_id"];
+              let title = displayMemos[i]["title"];
+              let content = displayMemos[i]["content"];
+              let likes = displayMemos[i]["likes"];
+
+              let temp_html = `
+                <div class="col">
+                  <div class="card h-100">
+                    <div id="card-body-${id}" class="card-body">
+                      <h5 class="card-title">${title}</h5>
+                      <p class="card-text">${content}</p>
+
+                      <p>
+                        <span class="card-likes">${likes}</span>
+                      </p>
+
+                      <div class="card-buttons">
+                        <button onclick="showEditBox('${id}')" type="button" class="btn btn-info btn-sm edit-button">수정</button>
+                        <button onclick="deleteMemo('${id}')" type="button" class="btn btn-danger btn-sm delete-button">삭제</button>
+                        <a class="link-like" onclick="likeMemo('${id}')">좋아요! 👍</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              // [각주 15] append
+              // 서버에서 받은 JSON은 화면이 아니다.
+              // temp_html을 만들어 #card-list에 붙여야 브라우저 화면에 보인다.
+              $("#card-list").append(temp_html);
+            }
+          },
+          error: function (xhr) {
+            alert("목록 불러오기 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      // [각주 16] 좋아요 기능
+      // 클릭한 카드의 _id를 /memo/like route로 보낸다.
+      // 서버에서는 $inc로 likes 값을 1 증가시킨다.
+      function likeMemo(id) {
+        $.ajax({
+          type: "POST",
+          url: "/memo/like",
+          data: {
+            id_give: id
+          },
+          success: function (response) {
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("좋아요 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      // [각주 17] 삭제 기능
+      // 클릭한 카드의 _id를 /memo/delete route로 보낸다.
+      // 서버에서는 ObjectId로 문서를 찾아 delete_one으로 삭제한다.
+      function deleteMemo(id) {
+        $.ajax({
+          type: "POST",
+          url: "/memo/delete",
+          data: {
+            id_give: id
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("삭제 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+
+      // [각주 18] 수정 입력창 표시
+      // 기존 카드의 제목과 내용을 읽고 input/textarea가 들어간 수정 폼으로 card-body를 교체한다.
+      function showEditBox(id) {
+        let title = $("#card-body-" + id).find(".card-title").text();
+        let content = $("#card-body-" + id).find(".card-text").text();
+
+        let edit_html = `
+          <div class="mb-2">
+            <input class="form-control new-title" value="${title}" />
+          </div>
+          <div class="mb-2">
+            <textarea class="form-control new-text" rows="3">${content}</textarea>
+          </div>
+          <button onclick="saveEdit('${id}')" type="button" class="btn btn-success btn-sm save-button">저장</button>
+        `;
+
+        $("#card-body-" + id).html(edit_html);
+      }
+
+      // [각주 19] 수정 저장
+      // 현재 카드 안의 .new-title, .new-text 값을 읽고 /memo/edit route로 보낸다.
+      // class와 find()를 쓰는 이유: 수정 폼이 여러 카드에서 생길 수 있으므로 현재 카드 안에서만 값을 찾기 위해서다.
+      function saveEdit(id) {
+        let newTitle = $("#card-body-" + id).find(".new-title").val();
+        let newText = $("#card-body-" + id).find(".new-text").val();
+
+        if (newTitle === "") {
+          alert("수정할 제목을 입력해주세요.");
+          return;
+        }
+
+        if (newText === "") {
+          alert("수정할 내용을 입력해주세요.");
+          return;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/memo/edit",
+          data: {
+            id_give: id,
+            title_give: newTitle,
+            content_give: newText
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.reload();
+          },
+          error: function (xhr) {
+            alert("수정 실패: " + xhr.status + "\n" + xhr.responseText);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

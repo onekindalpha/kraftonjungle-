@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+
+    <title>크래프톤 정글 | 부트스트랩 연습하기</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Jua', sans-serif;
+        }
+
+        .wrap {
+            margin: auto;
+            width: 900px;
+        }
+
+        .comment {
+            font-weight: bold;
+            color: blue;
+        }
+
+        .posting-box {
+            margin: 10px auto 30px auto;
+            width:500px;
+
+            border: 3px solid black;
+            border-radius: 5px;
+
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="jumbotron">
+            <h1 class="display-4">나홀로 링크 메모장!</h1>
+            <p class="lead">중요한 링크를 저장해두고, 나중에 볼 수 있는 공간입니다</p>
+            <hr class="my-4">
+            <button id="btn-posting-box" onclick="openclose()" class="btn btn-primary btn-lg" type="button">
+              포스팅박스 열기
+            </button>
+        </div>
+        <div id="post-box" class="posting-box">
+            <div class="form-group">
+            <label for="exampleInputEmail1">아티클 URL</label>
+            <input id="post-url" type="email" class="form-control" aria-describedby="emailHelp"
+                placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">간단 코멘트</label>
+                <input type="password" class="form-control" placeholder="">
+            </div>
+            <button onclick="hello()" type="button" class="btn btn-primary">기사저장</button>
+        </div>
+        <div id="cards-box" class="card-columns">
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img-top"
+                    src="https://d2ur7st6jjikze.cloudfront.net/offer_photos/29590/185689_medium_1525763241.jpg?1525763241"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <a href="http://naver.com" class="card-title">여기 기사 제목이 들어가죠</a>
+                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- jQuery 먼저 불러오기 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // 필요한 변수도 반환값도 없는 함수 
+    function hey() {
+        console.log("Hey :)")
+    }
+
+    hey()   // Hey :) 출력
+
+
+    // 필요한 변수가 없는 함수
+    function three() {
+        return 3
+    }
+
+    let a = three()
+    a    // 3이 a에 저장됨
+
+    // 반환값이 없는 함수
+    function hello(name) {
+        console.log("Hi, "+name+"!")
+    }
+
+    let b = hello("jungle")  // Hi, jungle!이 출력
+    b                        // undefined
+
+    $(document).ready(function () {
+      add_google_card();
+    });
+
+    function add_google_card() {
+      let img_url = 'https://cdn.vox-cdn.com/thumbor/Pkmq1nm3skO0-j693JTMd7RL0Zk=/0x0:2012x1341/1200x800/filters:focal(0x0:2012x1341)/cdn.vox-cdn.com/uploads/chorus_image/image/47070706/google2.0.0.jpg';
+      let link_url = 'https://google.com/';
+      let title = '제목 - 구글';
+      let desc = '구글에 대한 설명이 여기에 들어간다.';
+      let comment = '여기는 개인적인 코멘트가 들어간다.';
+
+      let temp_html = `<div class="card">
+        <img src="${img_url}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <a href="${link_url}" class="card-title">${title}</a>
+          <p class="card-text">${desc}</p>
+          <p class="card-text comment">${comment}</p>
+        </div>
+      </div>`;
+
+      $('#cards-box').append(temp_html);
+    }
+    function openclose() {
+        let status = $('#post-box').css('display')
+        if (status == 'block') {
+            $('#post-box').hide()
+            $('#btn-posting-box').text('포스팅박스 열기')
+        } else {
+            $('#post-box').show()
+            $('#btn-posting-box').text('포스팅박스 닫기')
+        }
+    }
+    </script>
+</body>
+
+</html>

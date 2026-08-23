@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        function signup() {
+            let username = $('#username').val()
+            let password = $('#password').val()
+
+            if (username == '') {
+                alert('아이디를 입력해주세요.')
+                return
+            }
+
+            if (password == '') {
+                alert('비밀번호를 입력해주세요.')
+                return
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/signup",
+                data: {
+                    username_give: username,
+                    password_give: password
+                },
+                success: function (response) {
+                    alert(response['msg'])
+
+                    if (response['result'] == 'success') {
+                        window.location.href = '/login'
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container" style="max-width: 400px; margin-top: 80px;">
+        <h2 class="text-center mb-4">회원가입</h2>
+
+        <div class="mb-3">
+            <label class="form-label">아이디</label>
+            <input id="username" class="form-control" type="text">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">비밀번호</label>
+            <input id="password" class="form-control" type="password">
+        </div>
+
+        <button class="btn btn-primary w-100" onclick="signup()">회원가입</button>
+
+        <div class="text-center mt-3">
+            <a href="/login">이미 계정이 있나요? 로그인</a>
+        </div>
+    </div>
+</body>
+</html>
